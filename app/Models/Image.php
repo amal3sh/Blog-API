@@ -9,6 +9,9 @@ class Image extends Model
 {
     use HasFactory;
     protected $guraded =[];
+    protected $fillable = [
+        "url"
+    ];
 
     public function imageable()
     {

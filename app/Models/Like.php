@@ -11,11 +11,11 @@ class Like extends Model
    protected $guarded = [];
    
    
-    public function user()
+    public function users()
     {
         return $this->belongsToOne(User::class);
     }
-    public function likeable()
+    public function likeables()
     {
         return $this->mophTo();
     }

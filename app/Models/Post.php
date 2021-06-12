@@ -13,7 +13,7 @@ class Post extends Model
     use HasFactory;
 
 
-    public function user()
+    public function users()
     {
         return $this->belongsTo(User::class);
     }
@@ -21,11 +21,11 @@ class Post extends Model
     {
         return $this->morphOne(Image::class,'imageable');
     }
-    public function tag()
+    public function tags()
     {
         return $this->belongsToMany(Tag::class);
     }
-    public function like()
+    public function likes()
     {
         return $this->morphMany(Like::class,'likeable');
     }

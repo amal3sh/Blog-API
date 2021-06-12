@@ -14,6 +14,7 @@ use App\Models\Comment;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
+    protected $guarded =[];
 
     /**
      * The attributes that are mass assignable.
@@ -24,6 +25,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        
     ];
 
     /**
@@ -45,7 +47,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
     
-    public function post()
+    public function posts()
     {
         return $this->hasMany(Post::class);
     }
@@ -53,11 +55,11 @@ class User extends Authenticatable
     {
         return $this->morphOne(Image::class,'imageable');
     }
-    public function like()
+    public function likes()
     {
         return $this->hasMany(Like::class);
     }
-    public function comment()
+    public function comments()
     {
         return $this->hasMany(Comment::class);
     }
