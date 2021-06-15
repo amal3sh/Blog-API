@@ -4,6 +4,7 @@ namespace App\Models;
 use App\Models\User;
 use App\Models\Image;
 use App\Models\Tag;
+use App\Models\Comment;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +12,12 @@ use Illuminate\Database\Eloquent\Model;
 class Post extends Model
 {
     use HasFactory;
+    protected $guarded=[];
+    protected $fillable =[
+        "title",
+        "content",
+        "user_id"
+    ];
 
 
     public function users()
@@ -28,5 +35,9 @@ class Post extends Model
     public function likes()
     {
         return $this->morphMany(Like::class,'likeable');
+    }
+    public function comments()
+    {
+        return $this->morphMany(Comment::class,'commentable');
     }
 }

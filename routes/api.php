@@ -20,3 +20,26 @@ use Illuminate\Support\Facades\Route;
 |-------------------------------------------------------------------------- */
 
 Route::resource('user','User\UserController')->except(['index','edit']);
+Route::resource('user.posts','User\UserPostController')->only(['index']);
+Route::resource('user.like','User\UserLikeController')->only(['index']);
+Route::resource('user.comment','User\UserCommentController')->only(['index']);
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Post Routes
+|-------------------------------------------------------------------------- */
+
+Route::resource('posts','Post\PostController')->except(['edit','create']);
+Route::put('post/{postId}/like','Post\PostLikeController@likeOrUnlike');
+Route::get('post/{postId}/like','Post\PostLikeController@index');
+Route::resource('post.comment','Post\PostCommentController')->only(['index','store']);
+
+
+/*
+|--------------------------------------------------------------------------
+| Post Routes
+|-------------------------------------------------------------------------- */
+Route::put('/comment/{commentId}/likes','Comment\CommentLikeController@likeOrUnlike');
+Route::get('/comment/{commentId}/likes','Comment\CommentLikeController@index');

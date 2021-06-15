@@ -15,10 +15,11 @@ class Comment extends Model
     {
         return $this->morphTo();
     }
+  
    
     public function likes()
     {
-        return $this->morpMany(Like::class,'likeable')
+        return $this->morpMany(Like::class,'likeable');
     }
     public function users()
     {
