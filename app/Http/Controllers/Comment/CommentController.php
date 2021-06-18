@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Comment;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use App\Models\Comment;
 
-class CommentController extends Controller
+class CommentController extends ApiController
 {
     public function update(Request $request,$id)
     {
         
-        $user_id = 1;//dummyData
+        $user_id = 3;//dummyData
         $comment = Comment::where('user_id',$user_id)->where('id',$id)->count();
         if($comment)
         {
@@ -19,13 +19,16 @@ class CommentController extends Controller
             if($request->has('content'))
             {
                 $comments->update(['content'=>$request->content]);
-                return response()->json(['$comments']);
+                return $this->successResponse("COmment Updated",200);
             }
-            return response()->json(['messsage'=>"Empty Content"]);
+            else
+            {
+            return $this->errorResponse("Comment body is blank",204);
+            }
         }
         else
         {
-            return response()->json(["statuscode"=>404,"message"=>"not found"]);
+            return $this->errorResponse("Not Found",404);
         }
 
 
@@ -36,7 +39,7 @@ class CommentController extends Controller
     
     public function destroy($id)
     {
-        $user_id=1;//dummydata
+        $user_id=3;//dummydata
         $comment = Comment::where('id',$id)->where('user_id',$user_id)->count();
         
         if($comment)

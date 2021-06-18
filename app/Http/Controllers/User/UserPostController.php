@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Post;
 
-class UserPostController extends Controller
+class UserPostController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -20,7 +20,7 @@ class UserPostController extends Controller
        
             $user = User::findOrFail($id);
             $posts = $user->posts;
-            return response()->json($posts);
+            return $this->showAll($posts);
         
     }
 

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Image;
@@ -10,7 +10,7 @@ use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserPutRequest;
 use Illuminate\Support\Facades\Hash;
 
-class UserController extends Controller
+class UserController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -50,9 +50,7 @@ class UserController extends Controller
 
             $user->image()->create(['url'=>$image]);
         }
-        return response()->json([
-            "status"=>1,
-        "message"=>"Created Successfully"]);
+        return $this->showOne($user,201);
 
         
     }
@@ -68,30 +66,20 @@ class UserController extends Controller
       if(User::where('id',$id)->exists())
       {
           $user = User::find($id);
-        return response()->json($user); 
+        return $this->showOne($user); 
 
       }
+     
       else
       {
-          return response()->json([
-              'status'=>404,
-              'message'=>"notfound"
-          ]);
+          return $this->errorResponse("Not found",404);
       }
+   
     }
 
 
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+   
 
     /**
      * Update the specified resource in storage.
@@ -114,10 +102,8 @@ class UserController extends Controller
             
             $user->image()->updateOrCreate(['url'=>$image]);
         }
-        return response()->json([
-            "status"=>2,
-            "message"=>"updated"
-        ]);
+        return $this->showOne($user,200);
+       
       
         
         //doubtsregarding_validation
@@ -137,19 +123,14 @@ class UserController extends Controller
         {
             $user = User::find($id);
             $user->delete();
-            return response()->json([
-                "status"=>3,
-                "message"=>"deleted succesfully"
-            ]);
+            return $this->showOne($user,200);
+            
         
 
         }
         else
         {
-            return response()->json([
-                "status"=>404,
-                "message"=>"notfound"
-            ]);
+            return $this->errorResponse("Not found",404);
 
         }
     }

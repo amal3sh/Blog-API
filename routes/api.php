@@ -44,3 +44,4 @@ Route::resource('post.comment','Post\PostCommentController')->only(['index','sto
 Route::put('/comment/{commentId}/likes','Comment\CommentLikeController@likeOrUnlike');
 Route::get('/comment/{commentId}/likes','Comment\CommentLikeController@index');
 Route::resource('comment','Comment\CommentController')->only(['update','destroy']);
+Route::resource('comment.replies','Comment\CommentReplyController')->only(['index','store']);

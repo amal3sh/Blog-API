@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use App\Models\User;
 
-class UserLikeController extends Controller
+class UserLikeController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -18,7 +18,7 @@ class UserLikeController extends Controller
     {
         $user= User::findOrFail($id);
         $likes = $user->likes()->with('likable')->get();
-        return response()->json($likes);
+        return $this->showAll($likes);
 
 
     }

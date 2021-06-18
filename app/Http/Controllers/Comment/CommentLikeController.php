@@ -2,32 +2,34 @@
 
 namespace App\Http\Controllers\Comment;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
+use App\Models\Comment;
 
-class CommentLikeController extends Controller
+class CommentLikeController extends ApiController
 {
     public function index($id)
     {
         $comment = Comment::findOrFail($id);
         $likes = $comment->likes()->count()->get();
-        return response()->json($likes);
+        return showAll($likes);
 
     }
     public function likeOrUnlike($id)
     {
         $comment = Comment::findOrFail($id);
-        $user_id = 1;//dummydata
+        $user_id = 3;//dummydata
         $liked = $comment->likes()->where('user_id',$user_id)->get()->count();
-        if(count==0)
+        if($liked)
         {
-            $comment->likes()->create(['user_id'=>$user_id]);
-            return response()->json(["statusCode"=>2,"message"=>"liked"]);
+            $comment->likes()->where('user_id',$user_id)->delete();
+           return $this->successResponse("Unliked",200);
+            
         }
         else
         {
-            $comment->likes()->where('user_id',$user_id)->delete();
-            return response()->json(['statuscode'=>3,"message"=>"unliked"]);
+            $comment->likes()->create(['user_id'=>$user_id]);
+            return $this->successResponse("Liked",200);
 
         }
     }

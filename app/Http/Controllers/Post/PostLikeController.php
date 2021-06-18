@@ -2,26 +2,27 @@
 
 namespace App\Http\Controllers\Post;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use App\Models\Post;
 
-class PostLikeController extends Controller
+class PostLikeController extends ApiController
 {
     public function likeOrUnlike($id)
     {
         $post = Post::findOrFail($id);
-        $user_id = 1;//dummydata
+        $user_id = 3;//dummydata
         $liked =$post->likes()->where('user_id',$user_id)->get()->count();
-        if(count==0)
+        
+        if($liked)
         {
-            $post->likes()->create(['user_id'=>$user_id]);
-            return response()->json(["statusCode"=>2,"message"=>"liked"]);
+            $post->likes()->where('user_id',$user_id)->delete();
+            return $this->successResponser("Unliked ",200);
         }
         else
         {
-            $post->likes()->where('user_id',$user_id)->delete();
-            return response()->json(['statuscode'=>3,"message"=>"unliked"]);
+            $post->likes()->create(['user_id'=>$user_id]);
+            return $this->successResponser("Liked ",200);
 
         }
     }
@@ -29,7 +30,7 @@ class PostLikeController extends Controller
     {
         $post = Post::findOrFail($id);
         $likes = $post->likes->count()->get();
-        return response()->json($likes);
+        return $this->showAll($likes);
 
     }
 }

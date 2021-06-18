@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use App\Models\User;
 
-class UserCommentController extends Controller
+class UserCommentController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -17,7 +17,7 @@ class UserCommentController extends Controller
     {
         $user = User::findOrFail($id);
         $comment = $user->comments()->with('commentable');
-         return response()->json($comment);
+         return $this->showAll($comment);
         
     }
 

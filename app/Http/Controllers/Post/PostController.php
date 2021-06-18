@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Post;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
 use App\Http\Requests\PostUpdateRequest;
 use App\Models\Tag;
 use App\Models\Post;
 
-class PostController extends Controller
+class PostController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -19,18 +19,10 @@ class PostController extends Controller
     public function index()
     {
        $post = Post::all();
-       return response()->json($post);
+       return $this->showAll($post);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+    
     private function createOrFetch($taglist)
     {
         $tags=[];
@@ -72,9 +64,7 @@ class PostController extends Controller
             $post->tags()->attach($tags);
 
         }
-        return response()->json([
-            "status"=>1,
-        "message"=>"Post Created Successfully"]);
+        return $this->successResponse("Post Created",200);
 
     }
 
@@ -87,20 +77,10 @@ class PostController extends Controller
     public function show($id)
     {
         $post = Post::findOrFail($id);
-        return response()->json($post);
+        return $this->showOne($post);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
+   
     /**
      * Update the specified resource in storage.
      *
@@ -114,6 +94,7 @@ class PostController extends Controller
         $post->title = !empty($request->title)?$request->title:$post->title;
         $post->content = !empty($request->content)?$request->content:$post->content;
         $post->update();
+        
         if($request->has('tags'))
         {
             $tags = $this->createOrFetch($request->tags); 
@@ -127,10 +108,7 @@ class PostController extends Controller
 
         }
        
-        return response()->json([
-            "statuscode"=>3,
-            "message"=>"Updated Successfully"
-        ]);
+        return $this->successResponse("Updated Successfully",200);
     }
 
     /**
@@ -143,6 +121,6 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($id);
         $post->delete();
-        return response()->json(["message"=>"Successfully deleted"]);
+        return $this->showOne($post);
     }
 }

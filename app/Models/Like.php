@@ -9,6 +9,11 @@ class Like extends Model
 {
     use HasFactory;
    protected $guarded = [];
+   protected $fillable=[
+       'user_id',
+        'likeable_id',
+        'likeable_type'
+   ];
    
    
     public function users()

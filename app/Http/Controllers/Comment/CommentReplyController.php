@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Comment;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
+use App\Models\Comment;
 
-class CommentReplyController extends Controller
+class CommentReplyController extends ApiController
 {
     
 public function index($id)
@@ -13,22 +14,22 @@ public function index($id)
 
 $comment = Comment::findOrFail($id);
 $replies=$comment->replies;
-return response()->json($replies);
+return $this->showAll($replies);
 
 
 }
 public function store(Request $request, $id)
 {
-    $user_id =1;//dummydata
+    $user_id =3;//dummydata
     if($request->has('content'))
     {
         $comment=Comment::findOrFail($id);
         $reply = $comment->replies()->create(['content'=>$request->content, 'user_id'=>$user_id]);
-        return response()->json(["status_code"=>3,"message"=>"created"]);
+        return $this->showOne($reply);
     }
     else
     {
-        return response()->json(["message"=>"noContentFound"]);
+        return $this->errorResponse("Comment body is blank",204);
     }
 
 }
