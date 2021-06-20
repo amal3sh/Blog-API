@@ -13,12 +13,17 @@ class UserPostController extends ApiController
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     *
      */
-    public function index($id)
+    public function __construct()
+    {
+        $this->middleware('auth:api',['only'=>['index']]);
+    }
+    public function index()
     {
         
        
-            $user = User::findOrFail($id);
+            $user = auth()->user();           
             $posts = $user->posts;
             return $this->showAll($posts);
         

@@ -8,6 +8,12 @@ use App\Models\Comment;
 
 class CommentLikeController extends ApiController
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api',['only'=>['likeOrUnlike']]);
+    }
+
+
     public function index($id)
     {
         $comment = Comment::findOrFail($id);
@@ -18,7 +24,7 @@ class CommentLikeController extends ApiController
     public function likeOrUnlike($id)
     {
         $comment = Comment::findOrFail($id);
-        $user_id = 3;//dummydata
+        $user_id = auth()->user()->id;
         $liked = $comment->likes()->where('user_id',$user_id)->get()->count();
         if($liked)
         {

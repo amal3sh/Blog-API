@@ -8,10 +8,17 @@ use App\Models\Post;
 
 class PostLikeController extends ApiController
 {
+   
+   public function __construct()
+   {
+       $this->middleware('auth:api',['only'=>['likeOrUnlike']]);
+   }
+   
+   
     public function likeOrUnlike($id)
     {
         $post = Post::findOrFail($id);
-        $user_id = 3;//dummydata
+        $user_id = auth()->user()->id;
         $liked =$post->likes()->where('user_id',$user_id)->get()->count();
         
         if($liked)

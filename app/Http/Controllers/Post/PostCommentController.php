@@ -8,7 +8,10 @@ use App\Models\Post;
 
 class PostCommentController extends ApiController
 {
-    
+    public function __construct()
+   {
+       $this->middleware('auth:api',['only'=>['store']]);
+   }
     public function index($id)
     {
        
@@ -19,7 +22,7 @@ class PostCommentController extends ApiController
     }
     public function store(Request $request,$id)
     {   $post = Post::findOrFail($id);
-        $user_id=3;//dummy_data
+        $user_id=auth()->user()->id;
         if($request->has('content'))
         {
 
@@ -28,10 +31,9 @@ class PostCommentController extends ApiController
 
 
         }
-        else
-        {
-            return $this->errorResponse("Comment doesn't exist",404);
-        }
+       
+           return $this->errorResponse("Empty Comment",406);
+        
     }
 
 

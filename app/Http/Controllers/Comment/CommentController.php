@@ -8,10 +8,15 @@ use App\Models\Comment;
 
 class CommentController extends ApiController
 {
+
+    public function __construct()
+    {
+     $this->middleware('auth:api',['only'=>['update','destroy']]);
+    }
     public function update(Request $request,$id)
     {
         
-        $user_id = 3;//dummyData
+        $user_id = auth()->user()->id;
         $comment = Comment::where('user_id',$user_id)->where('id',$id)->count();
         if($comment)
         {
@@ -23,7 +28,7 @@ class CommentController extends ApiController
             }
             else
             {
-            return $this->errorResponse("Comment body is blank",204);
+            return $this->errorResponse("Comment body is blank",406);
             }
         }
         else
@@ -39,7 +44,7 @@ class CommentController extends ApiController
     
     public function destroy($id)
     {
-        $user_id=3;//dummydata
+        $user_id=auth()->user()->id;
         $comment = Comment::where('id',$id)->where('user_id',$user_id)->count();
         
         if($comment)

@@ -11,37 +11,66 @@ use Illuminate\Support\Facades\Route;
 | Here is where you can register API routes for your application. These
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
-|
 */
 
+
+//User Related
+Route::post('user/profile/register','User\UserController@store');
+Route::post('user/profile/login','User\UserController@login');
+
+//Post Related
+Route::get('post/{post_id}/show','Post\PostController@show');
+Route::get('post/{post_id}/comments','Post\PostCommentController@index');
+Route::get('post/{postId}/likes','Post\PostLikeController@index');
+
+//Comment Related
+Route::get('comment/{commentId}/likes','Comment\CommentLikeController@index');
+Route::get('comment/{commentId}/replies','Comment\CommentReplyController@index');
+
+
+
 /*
 |--------------------------------------------------------------------------
-| User Routes
+| Auth Routes
 |-------------------------------------------------------------------------- */
 
-Route::resource('user','User\UserController')->except(['index','edit']);
-Route::resource('user.posts','User\UserPostController')->only(['index']);
-Route::resource('user.like','User\UserLikeController')->only(['index']);
-Route::resource('user.comment','User\UserCommentController')->only(['index']);
+Route::group([
+    'middleware' => 'api',
+    'prefix' =>'auth'
+],function()
+{
 
+//User Related
 
+Route::put('user/profile/update','User\UserController@update');
+Route::get('user/logout','User\UserController@logout');
+Route::get('user/profile/refresh','User\UserController@reload');
+Route::delete('user/profile/delete','User\UserController@destroy');
+Route::get('user/profile','User\UserController@show');
+Route::get('user/posts','User\UserPostController@index');
+Route::get('user/likes','User\UserLikeController@index');
+Route::get('user/comments','User\UserCommentController@index');
 
-/*
-|--------------------------------------------------------------------------
-| Post Routes
-|-------------------------------------------------------------------------- */
+//Post Related
 
-Route::resource('posts','Post\PostController')->except(['edit','create']);
+Route::post('post/create','Post\PostController@store');
+Route::put('post/{postId}/update','Post\PostController@update');
+Route::delete('post/{postId}/delete','Post\PostController@update');
+Route::post('post/{postId}/comment','Post\PostCommentController@store');
 Route::put('post/{postId}/like','Post\PostLikeController@likeOrUnlike');
-Route::get('post/{postId}/like','Post\PostLikeController@index');
-Route::resource('post.comment','Post\PostCommentController')->only(['index','store']);
+
+//Comment related
+
+Route::put('comment/{commentId}/update','Comment\CommentController@update');
+Route::delete('comment/{commenId}/delete','Comment\CommentController@delete');
+Route::put('comment/{commentId}/like','Comment\CommentLikeController@likeOrUnlike');
+Route::post('comment/{commentId}/reply','Comment\CommentReplyController@store');
 
 
-/*
-|--------------------------------------------------------------------------
-| Comment Routes
-|-------------------------------------------------------------------------- */
-Route::put('/comment/{commentId}/likes','Comment\CommentLikeController@likeOrUnlike');
-Route::get('/comment/{commentId}/likes','Comment\CommentLikeController@index');
-Route::resource('comment','Comment\CommentController')->only(['update','destroy']);
-Route::resource('comment.replies','Comment\CommentReplyController')->only(['index','store']);
+
+
+
+
+
+
+});

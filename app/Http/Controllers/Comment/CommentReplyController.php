@@ -8,7 +8,11 @@ use App\Models\Comment;
 
 class CommentReplyController extends ApiController
 {
-    
+public function  __construct()
+{
+    $this->middleware('api:auth',['only'=>['store']]);
+}
+
 public function index($id)
 {
 
@@ -20,7 +24,7 @@ return $this->showAll($replies);
 }
 public function store(Request $request, $id)
 {
-    $user_id =3;//dummydata
+    $user_id =auth()->user()->id;
     if($request->has('content'))
     {
         $comment=Comment::findOrFail($id);

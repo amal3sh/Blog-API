@@ -11,11 +11,20 @@ use App\Models\Post;
 
 class PostController extends ApiController
 {
+   
+   
+   
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
+
+
+    public function __construct()
+    {
+        $this->middleware('auth:api',['only'=>['store','update','destroy']]);
+    }
     public function index()
     {
        $post = Post::all();
@@ -49,7 +58,7 @@ class PostController extends ApiController
     {
         $data= $request->only(['title','content']);
         
-        $data['user_id']=3; 
+        $data['user_id']=auth()->user()->id;
         $post=Post::create($data);
         if($request->has('image'))
         {
@@ -91,6 +100,10 @@ class PostController extends ApiController
     public function update(PostUpdateRequest $request, $id)
     {
         $post=Post::findOrFail($id);
+        if($post->user_id != auth()->user()->id) 
+        {
+            return $this->errorResponse("You dont have permission to update this post",409);
+        }
         $post->title = !empty($request->title)?$request->title:$post->title;
         $post->content = !empty($request->content)?$request->content:$post->content;
         $post->update();
@@ -120,7 +133,14 @@ class PostController extends ApiController
     public function destroy($id)
     {
         $post = Post::findOrFail($id);
+       
+        if($post->user_id != auth()->user()->id) 
+        {
+            return $this->errorResponse("You dont have permission to delete this post",409);
+        }
+       
         $post->delete();
+       
         return $this->showOne($post);
     }
 }

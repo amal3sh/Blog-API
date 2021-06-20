@@ -13,10 +13,14 @@ class UserLikeController extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($id)
+    public function __construct()
+    {
+        $this->middleware('auth:api',['only'=>['index']]);
+    }
+    public function index()
 
     {
-        $user= User::findOrFail($id);
+        $user= auth()->user();
         $likes = $user->likes()->with('likable')->get();
         return $this->showAll($likes);
 

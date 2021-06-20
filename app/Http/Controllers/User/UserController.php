@@ -8,29 +8,22 @@ use App\Models\User;
 use App\Models\Image;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserPutRequest;
+use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends ApiController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    
+    
+    public function __construct()
     {
-        //
+        $this->middleware('auth:api',['only'=>['update','destroy','logout','show','reload']]);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+    
+    
+    
+  
 
     /**
      * Store a newly created resource in storage.
@@ -61,22 +54,44 @@ class UserController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show()
     {
-      if(User::where('id',$id)->exists())
-      {
-          $user = User::find($id);
-        return $this->showOne($user); 
+      
+          $user = auth()->user();
+          return $this->showOne($user,200); 
 
-      }
-     
-      else
-      {
-          return $this->errorResponse("Not found",404);
-      }
-   
     }
 
+
+
+    public function login(LoginRequest $request)
+      {
+         
+        $credentials = $request->only(['email','password']);
+
+        if (!$token = JWTAuth::attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        
+        return response()->json(compact('token'));
+
+      }
+      
+      
+      public function logout()
+      {
+
+        auth()->logout();
+        return $this->successResponse("Succesfully Signed out",200);
+    
+
+      }
+
+      public function reload()
+      {
+         $token = JWTAuth::getToken();
+         return response()->json([JWTAuth::refresh($token)]);
+      }
 
 
    
@@ -90,7 +105,7 @@ class UserController extends ApiController
      */
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
+        $user = auth()->user();
         $user->name = !empty($request->name)?$request->name:$user->name;
         $user->email = !empty($request->email)?$request->email:$user->email;
         $user->password = !empty($request->password)?$request->password:Hash::make($user->password);
@@ -117,21 +132,15 @@ class UserController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy()
     {
-        if(User::where("id",$id)->exists())
-        {
-            $user = User::find($id);
-            $user->delete();
+        
+            $user = auth()->user();
+             $user->delete();
             return $this->showOne($user,200);
             
-        
-
-        }
-        else
-        {
-            return $this->errorResponse("Not found",404);
-
-        }
+               
     }
+
+   
 }

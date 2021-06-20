@@ -13,11 +13,15 @@ class UserCommentController extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($id)
+    public function __construct()
     {
-        $user = User::findOrFail($id);
+        $this->middleware('auth:api',['only'=>['index']]);
+    }
+    public function index()
+    {
+        $user = auth()->user();
         $comment = $user->comments()->with('commentable');
-         return $this->showAll($comment);
+        return $this->showAll($comment);
         
     }
 
