@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 //User Related
 Route::post('user/profile/register','User\UserController@store');
 Route::post('user/profile/login','User\UserController@login');
+Route::get('user/all','User\UserController@index');
 
 //Post Related
 Route::get('post/{post_id}/show','Post\PostController@show');

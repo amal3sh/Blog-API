@@ -62,6 +62,12 @@ class UserController extends ApiController
 
     }
 
+    public function index()
+    {
+        $user = User::all();
+        return $this->showAll($user);
+    }
+
 
 
     public function login(LoginRequest $request)
